@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Apple Store ++</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --card-bg: #1c1c1e;
+            --blue: #0a84ff;
+            --gray: #8e8e93;
+            --border: #38383a;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        header {
+            padding: 40px 20px 20px 20px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 100;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .apps-container {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .app-card {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 14px;
+        }
+
+        .app-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #2c2c2e, #48484a);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .app-info {
+            flex-grow: 1;
+        }
+
+        .app-name {
+            font-size: 17px;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .app-os {
+            font-size: 13px;
+            color: var(--gray);
+            margin: 0;
+        }
+
+        .install-btn {
+            background-color: #2c2c2e;
+            color: var(--blue);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .install-btn:active {
+            opacity: 0.7;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 14px;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .modal-btn {
+            margin-top: 15px;
+            background: var(--blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 16px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Apple Store ++</h1>
+    </header>
+
+    <div class="apps-container" id="app-list">
+        </div>
+
+    <div class="modal" id="instruction-modal">
+        <div class="modal-content">
+            <h3 style="margin-top:0">Профиль загружен!</h3>
+            <p style="font-size: 14px; color: var(--gray); text-align: left;">
+                1. Нажмите <b>Разрешить</b>.<br>
+                2. Перейдите в <b>Настройки</b> iPhone.<br>
+                3. Нажмите <b>«Профиль загружен»</b> под вашим Apple ID.<br>
+                4. Нажмите <b>Установить</b>.
+            </p>
+            <button class="modal-btn" onclick="closeModal()">Понятно</button>
+        </div>
+    </div>
+
+    <script>
+        const apps = [
+            { name: "Gemini", os: "iOS 9+", url: "https://gemini.google.com/app" },
+            { name: "Suno AI", os: "iOS 12+", url: "https://suno.com" },
+            { name: "Google Контакты", os: "iOS 7+", url: "https://contacts.google.com/" },
+            { name: "Play Market", os: "iOS 6+", url: "https://play.google.com/store/games" },
+            { name: "YouTube", os: "iOS 6+", url: "https://m.youtube.com/" },
+            { name: "YouTube Music", os: "iOS 6+", url: "https://music.youtube.com/" },
+            { name: "Roblox", os: "iOS 6+", url: "https://www.roblox.com/" },
+            { name: "Google", os: "iOS 6+", url: "https://www.google.com/" },
+            { name: "Max", os: "iOS 7+", url: "https://max.ru/" },
+            { name: "RuStore", os: "iOS 6+", url: "https://www.rustore.ru/" },
+            { name: "Microsoft Store", os: "iOS 10+", url: "https://apps.microsoft.com/home?hl=ru-RU&gl=AT" },
+            { name: "Win11 Simu", os: "iOS 7+", url: "https://win11.blueedge.me/" },
+            { name: "appetize Emulator", os: "iOS 9+", url: "https://appetize.io/demo" }
+        ];
+
+        const container = document.getElementById('app-list');
+
+        // Рендер списка
+        apps.forEach(app => {
+            const letter = app.name.charAt(0).toUpperCase();
+            const card = document.createElement('div');
+            card.className = 'app-card';
+            card.innerHTML = `
+                <div class="app-icon">${letter}</div>
+                <div class="app-info">
+                    <h2 class="app-name">${app.name}</h2>
+                    <p class="app-os">Требуется: ${app.os}</p>
+                </div>
+                <button class="install-btn" onclick="installProfile('${app.name}', '${app.url}')">Установить</button>
+            `;
+            container.appendChild(card);
+        });
+
+        // Генерация UUID
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16).toUpperCase();
+            });
+        }
+
+        // Логика установки через Apple Profile
+        function installProfile(name, url) {
+            const uuid1 = generateUUID();
+            const uuid2 = generateUUID();
+            const identifier = "com.applestoreplusplus." + name.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+
+            // Создаем XML структуру конфигурационного профиля для Web Clip
+            const mobileconfig = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>FullScreen</key>
+            <true/>
+            <key>IconIsPrecomposed</key>
+            <true/>
+            <key>IsRemovable</key>
+            <true/>
+            <key>Label</key>
+            <string>${name}</string>
+            <key>PayloadDescription</key>
+            <string>Устанавливает веб-приложение ${name}</string>
+            <key>PayloadDisplayName</key>
+            <string>${name}</string>
+            <key>PayloadIdentifier</key>
+            <string>${identifier}.webclip</string>
+            <key>PayloadType</key>
+            <string>com.apple.webClip.managed</string>
+            <key>PayloadUUID</key>
+            <string>${uuid1}</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>URL</key>
+            <string>${url}</string>
+        </dict>
+    </array>
+    <key>PayloadDisplayName</key>
+    <string>${name} (Apple Store ++)</string>
+    <key>PayloadIdentifier</key>
+    <string>${identifier}</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>${uuid2}</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>`;
+
+            // Формируем файл для скачивания (Специальный MIME тип для iOS)
+            const blob = new Blob([mobileconfig], { type: 'application/x-apple-aspen-config' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${name.replace(/\s+/g, '')}.mobileconfig`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+
+            // Показываем инструкцию, так как с iOS 12.2 Apple требует ручного перехода в Настройки
+            document.getElementById('instruction-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('instruction-modal').style.display = 'none';
+        }
+    </script>
+</body>
+  </html>
+  
